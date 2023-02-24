@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   NativeTouchEvent,
   StyleSheet,
@@ -8,9 +8,20 @@ import {
   View,
 } from "react-native";
 import { MultiTap } from "./src/MultiTap";
+import { arePointsARightAngle, pointsToLengths } from "./src/utils/triangle";
 
 export default function App() {
   const [touches, setTouches] = useState<NativeTouchEvent[]>([]);
+
+  useEffect(() => {
+    // Get the 4 highest/lowest points
+    const points = touches.map((touch: NativeTouchEvent) => ({
+      x: touch.locationX,
+      y: touch.locationY,
+    }));
+    console.log(points);
+    console.log(arePointsARightAngle(points));
+  }, [touches]);
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -30,7 +41,7 @@ export default function App() {
       </MultiTap>
       <View>
         {touches.map((touch: NativeTouchEvent) => (
-          <Text>
+          <Text key={touch.identifier}>
             {touch.locationX},{touch.locationY}
           </Text>
         ))}
